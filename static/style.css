@@ -1,0 +1,59 @@
+/* Scrollable container */
+.scroll-container {
+    overflow-x: auto;
+    width: 100%;
+}
+
+/* Table Styling */
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+/* Table Cells */
+.user-table td {
+    padding: 10px;
+    border: 1px solid black;
+}
+
+/* Username and Password columns (Equal Width) */
+.username {
+    width: 40%;
+    word-wrap: break-word;
+    overflow: hidden;
+}
+
+/* Password Cell */
+.password-cell {
+    width: 40%;
+    gap: 5px;
+    align-items: center;
+}
+
+/* Input Field */
+.password {
+    border: 1px solid #ccc;
+    padding: 5px;
+    width:max-content
+}
+
+/* Buttons */
+.set-btn, .delete-btn {
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius:5px
+}
+
+.set-btn {
+    background-color: yellow;
+    color: black;
+    border: none;
+}
+
+/* Delete Button */
+.delete-btn {
+    background-color: red;
+    color: white;
+    border: none;
+}

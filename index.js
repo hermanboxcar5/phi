@@ -9,6 +9,28 @@ const io = new Server(server);
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 
+let cmd = {}
+cmd.users={}
+cmd.users.listusers = async function (){
+  let ret = await exec("/bin/bash -c \"eval getent passwd {$(/usr/bin/awk '/^UID_MIN/ {print $2}' /etc/login.defs)..$(/usr/bin/awk '/^UID_MAX/ {print $2}' /etc/login.defs)} | /usr/bin/cut -d: -f1\"");
+  let users = ret.stdout.split("\n")
+  if(users[users.length-1]==""){ users.pop() }
+  return users
+}
+cmd.users.pwdchange = async function (user, pwd){
+  let ret = await exec(`sudo echo -e "${pwd}\n${pwd}" | sudo passwd ${user}`);
+  console.log(ret)
+}
+cmd.users.deluser = async function (user){
+  if(window.confirm("Permanantly Delete User?")){
+      let ret = await exec(`sudo userdel -r ${user}`)
+      if(ret.stderr){
+          window.alert("deluser error: ", ret.stderr)
+      }
+      return ret
+  }
+}
+
 
 
 app.use("/", express.static(__dirname + "/static"));
@@ -22,14 +44,12 @@ app.use("/", express.static(__dirname + "/static"));
 io.on('connection', (socket) => {
   socket.on('chat message', (msg) => {
     console.log('message: ' + msg);
+    cmd.users.listusers()
   });
-  socket.on("")
+  socket.on("loadusers1", async ()=>{
+    let users = await cmd.users.listusers()
+    socket.emit("loadusers2", JSON.stringify(users))
+  })
 });
 server.listen(1234);
 
-let cmd = {}
-cmd.users={}
-cmd.users.listusers = async ()=>{
-  let ret = await exec("eval getent passwd {$(awk '/^UID_MIN/ {print $2}' /etc/login.defs)..$(awk '/^UID_MAX/ {print $2}' /etc/login.defs)} | cut -d: -f1")
-  console.log(ret)
-}
