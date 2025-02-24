@@ -19,7 +19,7 @@
 
 /* Username and Password columns (Equal Width) */
 .username {
-    width: 40%;
+    width: 20%;
     word-wrap: break-word;
     overflow: hidden;
 }

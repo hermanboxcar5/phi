@@ -12,6 +12,13 @@
   Hello world
   <button onclick="loadusers()">Load users</button>
   <div id="usersdisplay"></div>
+  <br><br><br><br>
+  
+  <div id="addusers">
+    <input id="addusername" placeholder="username"> <input id="adduserpassword" placeholder="password"><br><br>
+    <input id="adduserfullname" placeholder="Full Name"> <input id="adduserroom" placeholder="Room"> <input id="adduserwork" placeholder="Work Phone"> <input id="adduserhome" placeholder="Home Phone"> <input id="adduserother" placeholder="Other">
+    <button onclick="addusr()">Add User</button>
+  </div>
   <script src="/socket.io/socket.io.js"></script>
   <script src="script.js"></script>
 </body>
