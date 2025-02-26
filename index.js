@@ -27,14 +27,15 @@ cmd.users.listusers = async function (){
 
 }
 cmd.users.pwdchange = async function (user, pwd){
-  let ret = await exec(`sudo echo -e "${pwd}\n${pwd}" | sudo passwd ${user}`);
+  let ret = await exec(`sudo echo -e "${pwd}\n${pwd}" | sudo passwd ${user} || true`);
   console.log(ret)
 }
 
 cmd.users.deluser = async function (user){
-    let ret = await exec(`sudo userdel -r ${user}`)
-    if(ret.stderr){
-      console.log("deluser error: ", ret.stderr)
+    let ret = await exec(`sudo userdel --remove-home ${user} || true`)
+    let ret2 = await exec(`sudo delgroup ${user} || true`)
+    if(ret.stderr || ret2.stderr){
+      console.log("deluser error: ", ret.stderr, ret2.stderr)
     }
     return ret
 }
@@ -42,12 +43,12 @@ cmd.users.deluser = async function (user){
 cmd.users.adduser= async function (user, pwd, name="", room="", workphone="", homephone="", other=""){
         let gecos = "";
         [name, room, workphone, homephone, other].map(a=>{
-            if(/\S/.test(a) && a !=""){
+            if(a !=""){
                 gecos+=a+","
                 console.log("validarg",  a)
             }
         })
-        if(/\S/.test(gecos && gecos !="")){
+        if(gecos !=""){
             gecos = `--gecos "${gecos}"`
             console.log("gecos",  gecos)
         } else {
@@ -61,12 +62,77 @@ cmd.users.adduser= async function (user, pwd, name="", room="", workphone="", ho
         return ret
 }
 
+cmd.groups = {}
+cmd.groups.listgroupsof = async function (user){
+  let ret = await exec(`sudo groups ${user}`)
+  let groups = ret.stdout.split(" : ").join("\n").split("\n")[1]
+  groups = groups.split(" ")
+  return groups
+}
+cmd.groups.newgroup = async function (name){
+  let ret = await exec(`sudo groupadd ${name} || true`)
+  return ret
+}
+cmd.groups.delgroup = async function (name, force){
+  let ret = await exec(`sudo groupdel ${force?"-f":""} ${name} || true`)
+  console.log(ret)
+  return ret
+}
+cmd.groups.addusertogroup = async function (user, group){
+  let ret = await exec(`sudo gpasswd -a ${user} ${group} || true`)
+  return ret
+}
+cmd.groups.removeuserfromgroup = async function (user, group){
+  let ret = await exec(`sudo gpasswd --delete ${user} ${group} || true`)
+  return ret
+}
+cmd.groups.listusersof = async function (group){
+  let ret = await exec(`sudo getent group ${group} || true`)
+  let users = ret.stdout.split(":").join("\n").split("\n")
+  if(users[users.length-1]==""){
+      users.pop()
+  }
+  users = users[users.length-1]
+  users = users.split(",")
+  return users
+}
+cmd.groups.changeprimarygroup = async function (user, group){
+  let ret = await exec(`sudo usermod -g ${group} ${user} || true`)
+  return ret
+}
+cmd.groups.getprimarygroup = async function (user){
+  let ret = await exec(`sudo id -gn ${user}`)
+        let out = ret.stdout
+        if(out.includes("\n")){out = out.split("\n").join("")}
+        return ret.stdout
+}
+cmd.groups.listall = async function(){
+  let ret = await exec(`sudo getent group | cut -d: -f1,3`)
+  let list = ret.stdout.split("\n")
+  if(list[list.length-1]==""){list.pop()}
+  list = list.filter(a=>(Number(a.split(":")[1])>=1000 && Number(a.split(":")[1])<=9999))
+  list.map((a, e)=>list[e]=a.split(":")[0])
+  return list
+}
+cmd.users.usercomplete = async function (){
+  let users = await cmd.users.listusers()
+  let retlist = []
+  for (const user of users) {
+    let obj = user
+    obj.groups = await cmd.groups.listgroupsof(user.user)
+    obj.primary = await cmd.groups.getprimarygroup(user.user)
+    obj.allgroups = await cmd.groups.listall()
+    retlist.push(obj)
+  }
+  return retlist
+}
+
 
 app.use("/", express.static(__dirname + "/static"));
 
 io.on('connection', (socket) => {
   socket.on("loadusers1", async ()=>{
-    let users = await cmd.users.listusers()
+    let users = await cmd.users.usercomplete()
     socket.emit("loadusers2", JSON.stringify(users))
   })
 
@@ -97,7 +163,7 @@ io.on('connection', (socket) => {
   socket.on("adduser1", async (json)=>{
     json = JSON.parse(json)
     let { user, pwd, name, room, workphone, homephone, other } = json
-    let ret = cmd.users.adduser(user, pwd, name, room, workphone, homephone, other)
+    let ret = await cmd.users.adduser(user, pwd, name, room, workphone, homephone, other)
     let obj = {success:false}
     if(!ret.stderr){
       obj.success=true
@@ -107,7 +173,72 @@ io.on('connection', (socket) => {
     obj.msg=ret.stdout
     socket.emit("adduser2", JSON.stringify(obj))
   })
+  socket.on("addgroup1", async (json)=>{
+    json = JSON.parse(json)
+    console.log(json)
+    let existing = await cmd.groups.listall()
+    if(!existing.includes(json.group)){
+      await cmd.groups.newgroup(json.group)
+    }
+    let ret = await cmd.groups.addusertogroup(json.user, json.group)
+    console.log(ret)
+    let obj = {success:false}
+    if(!ret.stderr){
+      obj.success=true
+    } else {
+      obj.err = ret.stderr
+    }
+    obj.msg = ret.stdout
+    obj.user = json.user
+    obj.group = json.group
+    socket.emit("addgroup2", JSON.stringify(obj))
+  })
+  socket.on("revgroup1", async (json)=>{
+    json = JSON.parse(json)
+    let ret = cmd.groups.removeuserfromgroup(json.user, json.group)
+    let obj = {success:false}
+    if(!ret.stderr){
+      obj.success=true
+    } else {
+      obj.err = ret.stderr
+    }
+    obj.msg=ret.stdout
+    socket.emit("revgroup2", JSON.stringify(obj))
+  })
+  socket.on("setprimary1", async (json)=>{
+    json = JSON.parse(json)
+    console.log(json)
+    let existing = await cmd.groups.listall()
+    if(!existing.includes(json.group)){
+      await cmd.groups.newgroup(json.group)
+    }
+    let ret = await cmd.groups.changeprimarygroup(json.user, json.group)
+    console.log(ret)
+    let obj = {success:false}
+    if(!ret.stderr){
+      obj.success=true
+    } else {
+      obj.err = ret.stderr
+    }
+    obj.msg = ret.stdout
+    obj.user = json.user
+    obj.group = json.group
+    socket.emit("setprimary2", JSON.stringify(obj))
+  })
+  socket.on("delgroup1", async (json)=>{
+    json = JSON.parse(json)
+    let ret = await cmd.groups.delgroup(json.group, json.force)
+    let obj = {success:false}
+    if(!ret.stderr){
+      obj.success=true
+    } else {
+      obj.err = ret.stderr
+    }
+    obj.msg = ret.stdout
+    socket.emit("delgroup2", JSON.stringify(obj))
+  })
 });
+
 
 
 server.listen(1234);

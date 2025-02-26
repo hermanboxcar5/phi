@@ -4,20 +4,33 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <title>replit</title>
+  <title>PHI - UserMGR</title>
   <link href="style.css" rel="stylesheet" type="text/css" />
+  <link href="slider.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
-  Hello world
-  <button onclick="loadusers()">Load users</button>
+  <h1>PHI - UserMGR</h1>
+  <button onclick="loadusers()">Refresh Users</button><br>
   <div id="usersdisplay"></div>
   <br><br><br><br>
-  
+  <h3>New User</h3>
   <div id="addusers">
     <input id="addusername" placeholder="username"> <input id="adduserpassword" placeholder="password"><br><br>
     <input id="adduserfullname" placeholder="Full Name"> <input id="adduserroom" placeholder="Room"> <input id="adduserwork" placeholder="Work Phone"> <input id="adduserhome" placeholder="Home Phone"> <input id="adduserother" placeholder="Other">
     <button onclick="addusr()">Add User</button>
+  </div>
+  
+  <div id="groupsouter">
+    <h3> Global Groups</h3>
+    Force delete:
+    <label class="switch">
+      <input id="force" type="checkbox">
+      <span class="slider sliderdanger"></span>
+    </label>
+
+    <div id="groupsdisplay">
+    </div>
   </div>
   <script src="/socket.io/socket.io.js"></script>
   <script src="script.js"></script>
