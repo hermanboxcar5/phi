@@ -32,7 +32,7 @@ cmd.users.pwdchange = async function (user, pwd){
 }
 
 cmd.users.deluser = async function (user){
-    let ret = await exec(`sudo userdel --remove-home ${user} || true`)
+    let ret = await exec(`sudo userdel -r ${user} || true`)
     let ret2 = await exec(`sudo delgroup ${user} || true`)
     if(ret.stderr || ret2.stderr){
       console.log("deluser error: ", ret.stderr, ret2.stderr)
@@ -195,7 +195,8 @@ io.on('connection', (socket) => {
   })
   socket.on("revgroup1", async (json)=>{
     json = JSON.parse(json)
-    let ret = cmd.groups.removeuserfromgroup(json.user, json.group)
+    let ret = await cmd.groups.removeuserfromgroup(json.user, json.group)
+    console.log(ret)
     let obj = {success:false}
     if(!ret.stderr){
       obj.success=true
@@ -203,6 +204,7 @@ io.on('connection', (socket) => {
       obj.err = ret.stderr
     }
     obj.msg=ret.stdout
+    console.log(obj)
     socket.emit("revgroup2", JSON.stringify(obj))
   })
   socket.on("setprimary1", async (json)=>{
@@ -228,6 +230,7 @@ io.on('connection', (socket) => {
   socket.on("delgroup1", async (json)=>{
     json = JSON.parse(json)
     let ret = await cmd.groups.delgroup(json.group, json.force)
+    console.log(ret)
     let obj = {success:false}
     if(!ret.stderr){
       obj.success=true
@@ -235,10 +238,48 @@ io.on('connection', (socket) => {
       obj.err = ret.stderr
     }
     obj.msg = ret.stdout
+    console.log(obj)
     socket.emit("delgroup2", JSON.stringify(obj))
   })
 });
+socket.on("updatesys1", async json=>{
+  let ret = await exec("sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade")
+  let obj = {success:false}
+    if(!ret.stderr){
+      obj.success=true
+    } else {
+      obj.err = ret.stderr
+    }
+    obj.msg = ret.stdout
+    console.log(obj)
+    socket.emit("updatesys2", JSON.stringify(obj))
+})
 
+socket.on("firewallon1", async json=>{
+  let ret = await exec("apt-get install ufw && ufw enable")
+  let obj = {success:false}
+    if(!ret.stderr){
+      obj.success=true
+    } else {
+      obj.err = ret.stderr
+    }
+    obj.msg = ret.stdout
+    console.log(obj)
+    socket.emit("firewallon2", JSON.stringify(obj))
+})
+
+socket.on("firewalloff1", async json=>{
+  let ret = await exec("apt-get install ufw && ufw disable")
+  let obj = {success:false}
+    if(!ret.stderr){
+      obj.success=true
+    } else {
+      obj.err = ret.stderr
+    }
+    obj.msg = ret.stdout
+    console.log(obj)
+    socket.emit("firewalloff2", JSON.stringify(obj))
+})
 
 
 server.listen(1234);

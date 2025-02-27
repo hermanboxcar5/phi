@@ -3,18 +3,29 @@
 body, p, div, h1, h2, h3, button, input, table {
     font-family:'DM sans';
 }
+body {
+    background-color:#3A3B3C;
+    color:white;
+}
 
+hr {
+    border:white 2px solid;
+}
 
 button {
     border: none;
     border-radius:5px;
-    background-color:#3A3B3C;
-    color:white;
+    background-color:#cccccc;
+    color:black;
     padding:5px 10px;
 }
 input {
-    border: 1px solid #ccc;
     padding: 5px;
+    background-color:#555657;
+    color:white;
+    border:none;
+    border-radius:5px;
+    outline:none;
 }
 
 /* Scrollable container */
@@ -33,7 +44,7 @@ input {
 /* Table Cells */
 .user-table td {
     padding: 10px;
-    border: 1px solid black;
+    border: none;
 }
 
 /* Username and Password columns (Equal Width) */
@@ -65,8 +76,6 @@ input {
 }
 /* Input Field */
 .password {
-    border: 1px solid #ccc;
-    padding: 5px;
     width:calc(100% - 60px)
 }
 
@@ -92,36 +101,48 @@ input {
     border: none;
 }
 
-.group {
-    border: 1px black solid;
+.group, .group2 {
+    background-color:#0a0a0a;
     border-radius:5px;
     width:max-content;
-    height:20px;
-    padding:3px;
-    align-items:center;
-    display: flex;
-}
-.group2 {
-    border: 1px black solid;
-    border-radius:5px;
-    width:max-content;
-    height:20px;
-    padding:3px;
+    height:25px;
     margin:10px;
     align-items:center;
     display: inline-flex;
 }
 .buttonrev {
     margin-left:3px;
+    background-color:inherit;
+    height:100%;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    padding: 5px 3px;
+    align-items: center;
 }
 
-
-.secondary {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 1px;
+.buttonrev:hover {
+    background-color:#303030;
+    transition: 0.2s;
 }
 
-/* .group + .group {
-    margin-top:10px;
-} */
+.closeimg {
+    width:14px;
+    height:14px;
+    display:inline;
+}
+.groupname {
+    margin-left:5px;
+    margin-right:5px;
+}
+
+::placeholder {
+    opacity:0.6;
+    color:white;
+}
+
+.btnwarn {
+    background-color:yellow;
+}
+.btnnormal {
+    background-color:#95f702;
+}

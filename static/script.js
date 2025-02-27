@@ -11,7 +11,7 @@ socket.on("loadusers2", json => {
     let groupspans = ""
     let groupall = json[0].allgroups
     groupall.map(a=>{
-        groupspans += `<span class='group2'>${a} <button class="buttonrev" onclick="delgroup('${a}')">x</button></span>`
+        groupspans += `<span class='group'><span class="groupname">${a}</span> <button class="buttonrev" onclick="delgroup('${a}')"><img src="/assets/close.png" class="closeimg"></img></button></span>`
     })
     groupelem.innerHTML=groupspans
 
@@ -35,7 +35,7 @@ socket.on("loadusers2", json => {
         let options = "<option>"+allgroups.join("</option><option>")+"</option>"
         let groupdis = ""
         groups.map(a=>{
-            groupdis += `<span class='group'>${a} <button class="buttonrev" onclick="grouprev('${username}', '${a}')">x</button></span>`
+            groupdis += `<span class='group'><span class="groupname">${a}</span> <button class="buttonrev" onclick="grouprev('${username}', '${a}')"><img src="/assets/close.png" class="closeimg"></img></button></span>`
         })
         const row = document.createElement("tr");
 
@@ -54,9 +54,9 @@ socket.on("loadusers2", json => {
                 <datalist id="suggestions_${username}">
                     ${options}
                 </datalist>
-                <input id="groupselect_${username}" autoComplete="on" list="suggestions_${username}"/> <button onclick="setprimary('${username}')">Set as primary</button> <button onclick="addgroup('${username}')">Add group</button>
+                <input id="groupselect_${username}" autoComplete="on" list="suggestions_${username}"/> <button class="btnwarn" onclick="setprimary('${username}')">Set as primary</button> <button class="btnnormal" onclick="addgroup('${username}')">Add group</button>
             </span>
-            <span class="secondary">${groupdis}</span>
+            <div class="secondary">${groupdis}</div>
             </td>
         `
         table.appendChild(row);
@@ -151,12 +151,12 @@ socket.on("revgroup2", json=>{
     json = JSON.parse(json)
     if(json.success){
         window.alert("Group Removed")
-        
     } else {
-        window.alert("revgroup Error: ", json.err)
+        window.alert("revgroup Error: "+ json.err)
     }
     loadusers()
 })
+
 
 function setprimary(user){
     let value = document.getElementById(`groupselect_${user}`).value
@@ -183,7 +183,7 @@ socket.on("delgroup2", json=>{
         window.alert("Group deleted")
         
     } else {
-        window.alert("groupdel Error: ", json.err)
+        window.alert("groupdel Error: " + json.err)
     }
     loadusers()
 })

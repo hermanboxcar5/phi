@@ -7,18 +7,21 @@
   <title>PHI - UserMGR</title>
   <link href="style.css" rel="stylesheet" type="text/css" />
   <link href="slider.css" rel="stylesheet" type="text/css" />
+  <link rel="icon" type="image/png" href="/assets/favicon.png"/>
 </head>
 
 <body>
-  <h1>PHI - UserMGR</h1>
-  <button onclick="loadusers()">Refresh Users</button><br>
+  <img src="/assets/logo.png" style="height:150px;width:300px; margin-left: auto; margin-right: auto; display: block;">
+  <hr>
+  <h1>User Manager</h1>
+  <button class = "btnnormal" onclick="loadusers()">Refresh Users</button><br>
   <div id="usersdisplay"></div>
   <br><br><br><br>
   <h3>New User</h3>
   <div id="addusers">
     <input id="addusername" placeholder="username"> <input id="adduserpassword" placeholder="password"><br><br>
     <input id="adduserfullname" placeholder="Full Name"> <input id="adduserroom" placeholder="Room"> <input id="adduserwork" placeholder="Work Phone"> <input id="adduserhome" placeholder="Home Phone"> <input id="adduserother" placeholder="Other">
-    <button onclick="addusr()">Add User</button>
+    <button class="btnnormal" onclick="addusr()">Add User</button>
   </div>
   
   <div id="groupsouter">
@@ -30,6 +33,20 @@
     </label>
 
     <div id="groupsdisplay">
+    </div>
+  </div>
+  <hr>
+  <div id="apps">
+    <h1>Apps List</h1>
+    <div id="appslist">
+
+    </div>
+  </div>
+  <hr>
+  <div id="firewall">
+    <h1>Firewall settings</h1>
+    <div id="appslist">
+      
     </div>
   </div>
   <script src="/socket.io/socket.io.js"></script>
