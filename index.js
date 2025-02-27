@@ -246,45 +246,46 @@ io.on('connection', (socket) => {
     console.log(obj)
     socket.emit("delgroup2", JSON.stringify(obj))
   })
+  socket.on("updatesys1", async json=>{
+    let ret = await exec("sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade")
+    let obj = {success:false}
+      if(!ret.stderr){
+        obj.success=true
+      } else {
+        obj.err = ret.stderr
+      }
+      obj.msg = ret.stdout
+      console.log(obj)
+      socket.emit("updatesys2", JSON.stringify(obj))
+  })
+  
+  socket.on("firewallon1", async json=>{
+    let ret = await exec("apt-get install ufw && ufw enable")
+    let obj = {success:false}
+      if(!ret.stderr){
+        obj.success=true
+      } else {
+        obj.err = ret.stderr
+      }
+      obj.msg = ret.stdout
+      console.log(obj)
+      socket.emit("firewallon2", JSON.stringify(obj))
+  })
+  
+  socket.on("firewalloff1", async json=>{
+    let ret = await exec("apt-get install ufw && ufw disable")
+    let obj = {success:false}
+      if(!ret.stderr){
+        obj.success=true
+      } else {
+        obj.err = ret.stderr
+      }
+      obj.msg = ret.stdout
+      console.log(obj)
+      socket.emit("firewalloff2", JSON.stringify(obj))
+  })
 });
-socket.on("updatesys1", async json=>{
-  let ret = await exec("sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade")
-  let obj = {success:false}
-    if(!ret.stderr){
-      obj.success=true
-    } else {
-      obj.err = ret.stderr
-    }
-    obj.msg = ret.stdout
-    console.log(obj)
-    socket.emit("updatesys2", JSON.stringify(obj))
-})
 
-socket.on("firewallon1", async json=>{
-  let ret = await exec("apt-get install ufw && ufw enable")
-  let obj = {success:false}
-    if(!ret.stderr){
-      obj.success=true
-    } else {
-      obj.err = ret.stderr
-    }
-    obj.msg = ret.stdout
-    console.log(obj)
-    socket.emit("firewallon2", JSON.stringify(obj))
-})
-
-socket.on("firewalloff1", async json=>{
-  let ret = await exec("apt-get install ufw && ufw disable")
-  let obj = {success:false}
-    if(!ret.stderr){
-      obj.success=true
-    } else {
-      obj.err = ret.stderr
-    }
-    obj.msg = ret.stdout
-    console.log(obj)
-    socket.emit("firewalloff2", JSON.stringify(obj))
-})
 
 
 server.listen(1234);
