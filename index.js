@@ -9,6 +9,10 @@ const io = new Server(server);
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 
+
+
+
+
 let cmd = {}
 cmd.users={}
 cmd.users.listusers = async function (){
@@ -131,6 +135,7 @@ cmd.users.usercomplete = async function (){
 app.use("/", express.static(__dirname + "/static"));
 
 io.on('connection', (socket) => {
+  console.log("IO CONNECTION")
   socket.on("loadusers1", async ()=>{
     let users = await cmd.users.usercomplete()
     socket.emit("loadusers2", JSON.stringify(users))
