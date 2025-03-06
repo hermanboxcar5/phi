@@ -247,7 +247,7 @@ io.on('connection', (socket) => {
     socket.emit("delgroup2", JSON.stringify(obj))
   })
   socket.on("updatesys1", async json=>{
-    let ret = await exec("sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade")
+    let ret = await exec("sudo apt-get update -y && sudo apt-get upgrade -y && sudo apt-get dist-upgrade -y")
     let obj = {success:false}
       if(!ret.stderr){
         obj.success=true
@@ -260,7 +260,7 @@ io.on('connection', (socket) => {
   })
   
   socket.on("firewallon1", async json=>{
-    let ret = await exec("apt-get install ufw && ufw enable")
+    let ret = await exec("sudo apt install ufw -y && ufw enable")
     let obj = {success:false}
       if(!ret.stderr){
         obj.success=true
@@ -273,7 +273,7 @@ io.on('connection', (socket) => {
   })
   
   socket.on("firewalloff1", async json=>{
-    let ret = await exec("apt-get install ufw && ufw disable")
+    let ret = await exec("sudo apt install ufw -y && ufw disable")
     let obj = {success:false}
       if(!ret.stderr){
         obj.success=true
