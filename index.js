@@ -247,7 +247,7 @@ io.on('connection', (socket) => {
     socket.emit("delgroup2", JSON.stringify(obj))
   })
   socket.on("updatesys1", async json=>{
-    let ret = await exec("sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade")
+    let ret = await exec("sudo apt update -y && sudo apt upgrade -y && sudo apt dist-upgrade -y")
     let obj = {success:false}
       if(!ret.stderr){
         obj.success=true
