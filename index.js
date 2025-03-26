@@ -17,7 +17,7 @@ let cmd = {}
 cmd.users={}
 cmd.users.listusers = async function (){
   try{
-    let ret = await exec(`/bin/bash -c "getent passwd {$(awk '/^UID_MIN/ {print $2}' /etc/login.defs)..$(awk '/^UID_MAX/ {print $2}' /etc/login.defs)} || true"`);
+    let ret = await exec(`awk -F: '($3 >= 1000 && $3 <= 9999)' /etc/passwd`);
     let users = ret.stdout.split("\n")
     if(users[users.length-1]==""){ users.pop() }
     users.map((info, i)=>{
