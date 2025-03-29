@@ -187,6 +187,59 @@ socket.on("delgroup2", json=>{
     }
     loadusers()
 })
+function updatePasswordPolicy() {
+    const policy = {
+        minlen: document.getElementById("minlen").value,
+        ucredit: document.getElementById("ucredit").value,
+        lcredit: document.getElementById("lcredit").value,
+        dcredit: document.getElementById("dcredit").value,
+        ocredit: document.getElementById("ocredit").value,
+        maxrepeat: document.getElementById("maxrepeat").value,
+        maxsequence: document.getElementById("maxsequence").value,
+        remember: document.getElementById("remember").value,
+        maxage: document.getElementById("maxage").value,
+        lockout: document.getElementById("lockout").value
+        
+    };
+
+    if (window.confirm("Confirm action: Update Password Policy?")) {
+        socket.emit("updatePolicy1", JSON.stringify(policy));
+    }
+}
+
+socket.on("updatePolicy2", json => {
+    json = JSON.parse(json);
+    if (json.success) {
+        window.alert("Password policy updated successfully!");
+    } else {
+        window.alert("Error updating policy: " + json.err);
+    }
+});
+function prefillCurrentPolicy() {
+    socket.emit("getPolicy1"); // Request current values from the server
+}
+
+socket.on("getPolicy2", json => {
+    json = JSON.parse(json);
+    document.getElementById("minlen").value = json.minlen;
+    document.getElementById("ucredit").value = json.ucredit;
+    document.getElementById("lcredit").value = json.lcredit;
+    document.getElementById("dcredit").value = json.dcredit;
+    document.getElementById("ocredit").value = json.ocredit;
+    document.getElementById("maxrepeat").value = json.maxrepeat;
+    document.getElementById("maxsequence").value = json.maxsequence;
+    document.getElementById("remember").value = json.remember;
+    document.getElementById("maxage").value = json.maxage;
+    document.getElementById("lockout").value = json.lockout;
+    window.alert("Prefilled current policy values.");
+});
+
+
+
+
+
+
+
 
 window.onload=loadusers
 

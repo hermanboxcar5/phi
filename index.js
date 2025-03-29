@@ -284,6 +284,62 @@ io.on('connection', (socket) => {
       console.log(obj)
       socket.emit("firewalloff2", JSON.stringify(obj))
   })
+  socket.on("updatePolicy1", async (json) => {
+    json = JSON.parse(json);
+
+    try {
+        // 1️⃣ Update Password Complexity (pwquality.conf)
+        await exec(`sudo sed -i '/minlen/d' /etc/security/pwquality.conf && echo "minlen=${json.minlen}" | sudo tee -a /etc/security/pwquality.conf`);
+        await exec(`sudo sed -i '/ucredit/d' /etc/security/pwquality.conf && echo "ucredit=${json.ucredit}" | sudo tee -a /etc/security/pwquality.conf`);
+        await exec(`sudo sed -i '/lcredit/d' /etc/security/pwquality.conf && echo "lcredit=${json.lcredit}" | sudo tee -a /etc/security/pwquality.conf`);
+        await exec(`sudo sed -i '/dcredit/d' /etc/security/pwquality.conf && echo "dcredit=${json.dcredit}" | sudo tee -a /etc/security/pwquality.conf`);
+        await exec(`sudo sed -i '/ocredit/d' /etc/security/pwquality.conf && echo "ocredit=${json.ocredit}" | sudo tee -a /etc/security/pwquality.conf`);
+        await exec(`sudo sed -i '/maxrepeat/d' /etc/security/pwquality.conf && echo "maxrepeat=${json.maxrepeat}" | sudo tee -a /etc/security/pwquality.conf`);
+        await exec(`sudo sed -i '/maxsequence/d' /etc/security/pwquality.conf && echo "maxsequence=${json.maxsequence}" | sudo tee -a /etc/security/pwquality.conf`);
+
+        // 2️⃣ Update Password History Policy (pwhistory.conf)
+        await exec(`sudo sed -i '/remember/d' /etc/security/pwhistory.conf && echo "remember=${json.remember}" | sudo tee -a /etc/security/pwhistory.conf`);
+
+        // 3️⃣ Set Password Expiration (chage)
+        await exec(`sudo sed -i '/PASS_MAX_DAYS/d' /etc/login.defs && echo "PASS_MAX_DAYS ${json.maxage}" | sudo tee -a /etc/login.defs`);
+        await exec(`sudo chage --maxdays ${json.maxage} --warndays 7 --inactive 30 root`); // Applies to root user
+
+        // 4️⃣ Configure Account Lockout
+        await exec(`sudo sed -i '/pam_tally2.so/d' /etc/pam.d/common-auth`);
+        await exec(`echo "auth required pam_tally2.so deny=${json.lockout} unlock_time=900 onerr=fail" | sudo tee -a /etc/pam.d/common-auth`);
+
+        // 5️⃣ Apply the changes
+        await exec(`sudo systemctl restart sshd`);
+        
+        socket.emit("updatePolicy2", JSON.stringify({ success: true }));
+    } catch (error) {
+        socket.emit("updatePolicy2", JSON.stringify({ success: false, err: error.toString() }));
+    }
+  });
+  socket.on("getPolicy1", async () => {
+    try {
+        // Fetch current values using Linux commands
+        const minlen = (await exec("grep 'minlen' /etc/security/pwquality.conf | awk -F '=' '{print $2}' || echo 8")).stdout.trim();
+        const ucredit = (await exec("grep 'ucredit' /etc/security/pwquality.conf | awk -F '=' '{print $2}' || echo -1")).stdout.trim();
+        const lcredit = (await exec("grep 'lcredit' /etc/security/pwquality.conf | awk -F '=' '{print $2}' || echo -1")).stdout.trim();
+        const dcredit = (await exec("grep 'dcredit' /etc/security/pwquality.conf | awk -F '=' '{print $2}' || echo -1")).stdout.trim();
+        const ocredit = (await exec("grep 'ocredit' /etc/security/pwquality.conf | awk -F '=' '{print $2}' || echo -1")).stdout.trim();
+        const maxrepeat = (await exec("grep 'maxrepeat' /etc/security/pwquality.conf | awk -F '=' '{print $2}' || echo 3")).stdout.trim();
+        const maxsequence = (await exec("grep 'maxsequence' /etc/security/pwquality.conf | awk -F '=' '{print $2}' || echo 3")).stdout.trim();
+        const remember = (await exec("grep 'remember' /etc/security/pwhistory.conf | awk -F '=' '{print $2}' || echo 5")).stdout.trim();
+        const maxage = (await exec("grep 'PASS_MAX_DAYS' /etc/login.defs | awk '{print $2}' || echo 90")).stdout.trim();
+        const lockout = (await exec("grep 'pam_tally2.so' /etc/pam.d/common-auth | awk -F 'deny=' '{print $2}' | awk '{print $1}' || echo 5")).stdout.trim();
+
+        // Send current policy values to frontend
+        socket.emit("getPolicy2", JSON.stringify({
+            minlen, ucredit, lcredit, dcredit, ocredit,
+            maxrepeat, maxsequence, remember, maxage, lockout
+        }));
+    } catch (error) {
+        console.error("Error fetching policy:", error);
+        socket.emit("getPolicy2", JSON.stringify({ error: "Failed to fetch policy" }));
+    }
+  });
 });
 
 

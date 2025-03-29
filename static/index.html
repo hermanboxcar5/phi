@@ -36,6 +36,23 @@
     </div>
   </div>
   <hr>
+  
+  <div id="passwordPolicy">
+    <h2>Password Policy</h2>
+    <label>Minimum Length: <input id="minlen" type="number" value="8"></label><br>
+    <label>Min Uppercase: <input id="ucredit" type="number" value="-1"></label><br>
+    <label>Min Lowercase: <input id="lcredit" type="number" value="-1"></label><br>
+    <label>Min Numbers: <input id="dcredit" type="number" value="-1"></label><br>
+    <label>Min Special Chars: <input id="ocredit" type="number" value="-1"></label><br>
+    <label>Max Repeat Chars: <input id="maxrepeat" type="number" value="3"></label><br>
+    <label>Max Sequence Chars: <input id="maxsequence" type="number" value="3"></label><br>
+    <label>Remember Last N Passwords: <input id="remember" type="number" value="5"></label><br>
+    <label>Max Password Age (days): <input id="maxage" type="number" value="90"></label><br>
+    <label>Max Login Attempts Before Lockout: <input id="lockout" type="number" value="5"></label><br>
+    <button class="btnnormal" onclick="prefillCurrentPolicy()">Prefill Current</button>
+    <button class="btnwarn" onclick="updatePasswordPolicy()">Update Policy</button>    
+  </div>
+  <hr>
   <div id="apps">
     <h1>Apps List</h1>
     <div id="appslist">
