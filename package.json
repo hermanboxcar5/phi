@@ -5,9 +5,15 @@
   "dependencies": {
     "express": "^4.21.2",
     "os": "^0.1.2",
+    "pkg": "^5.8.1",
     "socketio": "^1.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"
+  },
+  "pkg": {
+    "assets": "static/**/*",
+    "targets": ["node*-linux-x64"],
+    "outputPath": "pkgmod"
   }
 }

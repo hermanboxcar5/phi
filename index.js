@@ -1,6 +1,7 @@
 const express = require('express');
 const { createServer } = require('node:http');
 const  Server  = require('socket.io');
+let path = require('path');
 
 const app = express();
 const server = createServer(app);
@@ -132,7 +133,7 @@ cmd.users.usercomplete = async function (){
 }
 
 
-app.use("/", express.static(__dirname + "/static"));
+app.use("/", express.static(path.join(__dirname, "/static")));
 
 io.on('connection', (socket) => {
   console.log("IO CONNECTION")
