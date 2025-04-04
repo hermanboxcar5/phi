@@ -1,85 +1,75 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title>PHI - UserMGR</title>
-  <link href="style.css" rel="stylesheet" type="text/css" />
-  <link href="slider.css" rel="stylesheet" type="text/css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indeterminate Progress Bar</title>
+    <style>
+        .progress-container {
+            width: 100%;
+            height: 30px;
+            background-color: #f3f3f3;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 100%;
+            background: #4caf50;
+            transition: none;
+        }
+
+        .progress-bar.loading {
+            background: linear-gradient(to right, #4caf50 30%, rgba(0, 0, 0, 0) 30%);
+            background-size: 200% 100%;
+            animation: progress-animation 2s infinite linear;
+        }
+        .progress-bar.fill {
+            background: #4caf50;
+            animation: fill-animation 2s linear forwards;
+        }
+
+        @keyframes progress-animation {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+
+        @keyframes fill-animation {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+    </style>
 </head>
-
 <body>
-  <h1>PHI - UserMGR</h1>
-  <button onclick="loadusers()">Refresh Users</button><br>
-  <div id="usersdisplay">
-    <div class="scroll-container">
-      <table class="user-table">
-        <tr>
-          <td class="uid">${uid}</td>
-    <td class="username">${username}</td>
-    
-    <td class="password-cell">
-        <input type="text" id="pwd_${username}" class="password" placeholder="password">
-        <button onclick="setpwd('${username}')" class="set-btn">Set</button>
-    </td>
-    <td class = "del-cel"><button onclick="delusr('${username}')" class="delete-btn">Delete</button></td>
-    <td class = "groups-cel">
-    <span class="primary">
-        Primary: primarygroup <br>
-        <datalist id="suggestions_${username}">
-            <option> hello</option>
-            <option> hello2</option>
-        </datalist>
-        <input id="groupselect_${username}" autoComplete="on" list="suggestions_${username}"/> <button onclick="setprimary('${username}')">Set as primary</button> <button onclick="addgroup('${username}')">Add group</button>
-    </span>
-    <span class="secondary">${groupdis}</span>
-    </td>
-        </tr>
-        <tr>
-          <td class="uid">${uid}</td>
-    <td class="username">${username}</td>
-    
-    <td class="password-cell">
-        <input type="text" id="pwd_${username}" class="password" placeholder="password">
-        <button onclick="setpwd('${username}')" class="set-btn">Set</button>
-    </td>
-    <td class = "del-cel"><button onclick="delusr('${username}')" class="delete-btn">Delete</button></td>
-    <td class = "groups-cel">
-    <span class="primary">
-        Primary: primarygroup <br>
-        <datalist id="suggestions_${username}">
-            <option> hello</option>
-            <option> hello2</option>
-        </datalist>
-        <input id="groupselect_${username}" autoComplete="on" list="suggestions_${username}"/> <button onclick="setprimary('${username}')">Set as primary</button> <button onclick="addgroup('${username}')">Add group</button>
-    </span>
-    <span class="secondary">${groupdis}</span>
-    </td>
-        </tr>
-      </table>
+    <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
     </div>
-  </div>
-  <br><br><br><br>
-  <h3>New User</h3>
-  <div id="addusers">
-    <input id="addusername" placeholder="username"> <input id="adduserpassword" placeholder="password"><br><br>
-    <input id="adduserfullname" placeholder="Full Name"> <input id="adduserroom" placeholder="Room"> <input id="adduserwork" placeholder="Work Phone"> <input id="adduserhome" placeholder="Home Phone"> <input id="adduserother" placeholder="Other">
-    <button onclick="addusr()">Add User</button>
-  </div>
-  
-  <div id="groupsouter">
-    <h3> Global Groups</h3>
-    Force delete:
-    <label class="switch">
-      <input id="force" type="checkbox">
-      <span class="slider sliderdanger"></span>
-    </label>
 
-    <div id="groupsdisplay">
-      <span class='group'>group1<button class="buttonrev">x</button></span>
-    </div>
-  </div>
+    <button onclick="startLoading()">Start Loading</button>
+    <button onclick="finishLoading()">Finish Loading</button>
+
+    <script>
+        function startLoading() {
+            const progressBar = document.getElementById('progress-bar');
+            progressBar.classList.remove('fill');
+            progressBar.offsetWidth; // Trigger reflow to restart the animation
+            progressBar.classList.add('loading');
+        }
+
+        function finishLoading() {
+            const progressBar = document.getElementById('progress-bar');
+            progressBar.classList.remove('loading');
+
+            
+            // Wait for the speed-up animation to complete before making the bar solid
+            progressBar.addEventListener('animationend', () => {
+
+                progressBar.classList.add('fill');
+            }, { once: true });
+        }
+    </script>
 </body>
-
 </html>

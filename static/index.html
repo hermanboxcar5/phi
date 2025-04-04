@@ -7,6 +7,7 @@
   <title>PHI - UserMGR</title>
   <link href="style.css" rel="stylesheet" type="text/css" />
   <link href="slider.css" rel="stylesheet" type="text/css" />
+  <link href="sliderprogressbar.css" rel="stylesheet" type="text/css" />
   <link rel="icon" type="image/png" href="/assets/favicon.png"/>
 </head>
 
@@ -64,6 +65,107 @@
     <h1>Firewall settings</h1>
     <div id="firewallsettings">
       
+    </div>
+  </div>
+  <hr>
+  <div id="snowsdc">
+    <h1>SnowLDC Scripts</h1>
+    <b>Running: <span id="snowrunning">None</span></b>
+    <div class="progress-container">
+      <div class="progress-bar" id="progress-bar"></div>
+  </div>
+  <br>
+    <div class="snowinner" id="snowinner">
+      <!-- Main scripts -->
+      <div class="snowtile" onclick="snowrun('example.sh')">
+        <span class="snowimg"><div class="snowimginner snowimgnormal"></div></span>
+        <span class="snowcontent">example.sh</span>
+      </div>
+      <div class="snowtile" onclick="snowrun('main.sh')">
+        <span class="snowimg"><div class="snowimginner snowimgnormal"></div></span>
+        <span class="snowcontent">main.sh</span>
+      </div>
+      <div class="snowtile" onclick="snowrun('Apache.sh')">
+        <span class="snowimg"><div class="snowimginner snowimgnormal"></div></span>
+        <span class="snowcontent">Apache.sh</span>
+      </div>
+      <div class="snowtile" onclick="snowrun('AppArmor.sh')">
+        <span class="snowimg"><div class="snowimginner snowimgnormal"></div></span>
+        <span class="snowcontent">AppArmor.sh</span>
+      </div>
+      <div class="snowtile" onclick="snowrun('FTP.sh')">
+        <span class="snowimg"><div class="snowimginner snowimgnormal"></div></span>
+        <span class="snowcontent">FTP.sh</span>
+      </div>
+      <div class="snowtile" onclick="snowrun('GDM3.sh')">
+        <span class="snowimg"><div class="snowimginner snowimgnormal"></div></span>
+        <span class="snowcontent">GDM3.sh</span>
+      </div>
+      <div class="snowtile" onclick="snowrun('LAMP.sh')">
+        <span class="snowimg"><div class="snowimginner snowimgnormal"></div></span>
+        <span class="snowcontent">LAMP.sh</span>
+      </div>
+      <div class="snowtile" onclick="snowrun('LightDM.sh')">
+        <span class="snowimg"><div class="snowimginner snowimgnormal"></div></span>
+        <span class="snowcontent">LightDM.sh</span>
+      </div>
+      <div class="snowtile" onclick="snowrun('MySQL.sh')">
+        <span class="snowimg"><div class="snowimginner snowimgnormal"></div></span>
+        <span class="snowcontent">MySQL.sh</span>
+      </div>
+      <div class="snowtile" onclick="snowrun('Nginx.sh')">
+        <span class="snowimg"><div class="snowimginner snowimgnormal"></div></span>
+        <span class="snowcontent">Nginx.sh</span>
+      </div>
+      <div class="snowtile" onclick="snowrun('OpenSSH.sh')">
+        <span class="snowimg"><div class="snowimginner snowimgnormal"></div></span>
+        <span class="snowcontent">OpenSSH.sh</span>
+      </div>
+      <div class="snowtile" onclick="snowrun('Samba.sh')">
+        <span class="snowimg"><div class="snowimginner snowimgnormal"></div></span>
+        <span class="snowcontent">Samba.sh</span>
+      </div>
+      <div class="snowtile" onclick="snowrun('Seafiles.sh')">
+        <span class="snowimg"><div class="snowimginner snowimgnormal"></div></span>
+        <span class="snowcontent">Seafiles.sh</span>
+      </div>
+
+
+
+
+
+      <!-- Standby Scripts -->
+      <div class="snowtile" onclick="snowrun('basic.sh')">
+        <span class="snowimg"><div class="snowimginner snowimgcore"></div></span>
+        <span class="snowcontent">basic.sh</span>
+      </div>
+      <div class="snowtile" onclick="snowrun('apt.sh')">
+        <span class="snowimg"><div class="snowimginner snowimgcore"></div></span>
+        <span class="snowcontent">apt.sh</span>
+      </div>
+      <div class="snowtile" onclick="snowrun('filesystem.sh')">
+        <span class="snowimg"><div class="snowimginner snowimgcore"></div></span>
+        <span class="snowcontent">filesystem.sh</span>
+      </div>
+      <div class="snowtile" onclick="snowrun('media.sh')">
+        <span class="snowimg"><div class="snowimginner snowimgcore"></div></span>
+        <span class="snowcontent">media.sh</span>
+      </div>
+      <div class="snowtile" onclick="snowrun('network.sh')">
+        <span class="snowimg"><div class="snowimginner snowimgcore"></div></span>
+        <span class="snowcontent">network.sh</span>
+      </div>
+      <div class="snowtile" onclick="snowrun('package.sh')">
+        <span class="snowimg"><div class="snowimginner snowimgcore"></div></span>
+        <span class="snowcontent">package.sh</span>
+      </div>
+      <div class="snowtile" onclick="snowrun('service.sh')">
+        <span class="snowimg"><div class="snowimginner snowimgcore"></div></span>
+        <span class="snowcontent">service.sh</span>
+      </div>
+
+
+
     </div>
   </div>
   <script src="/socket.io/socket.io.js"></script>

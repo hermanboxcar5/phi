@@ -341,7 +341,29 @@ io.on('connection', (socket) => {
         socket.emit("getPolicy2", JSON.stringify({ error: "Failed to fetch policy" }));
     }
   });
+  socket.on("snowrun1", async (file) => {
+
+    let obj = {success:false}
+    let ret = {};
+    try {
+
+      ret = await exec(`sudo bash ${path.join(__dirname, "snowLDC/"+file)}`)
+
+    } catch(e){
+      obj.err=e
+    }
+    if(!ret.stderr && !obj.err){
+      obj.success=true
+    } else {
+      obj.err = ret.stderr + obj.err
+    }
+    obj.msg=ret.stdout
+
+    socket.emit("snowrun2", JSON.stringify(obj))
+  })
 });
+
+
 
 
 

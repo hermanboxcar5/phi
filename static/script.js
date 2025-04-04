@@ -1,8 +1,52 @@
 const socket = io();
 
+
+
+
+function startLoading() {
+    const progressBar = document.getElementById('progress-bar');
+    progressBar.classList.remove('fill');
+    progressBar.offsetWidth; // Trigger reflow to restart the animation
+    progressBar.classList.add('loading');
+}
+
+function finishLoading() {
+    const progressBar = document.getElementById('progress-bar');
+    progressBar.classList.remove('loading');
+
+    
+    // Wait for the speed-up animation to complete before making the bar solid
+    progressBar.addEventListener('animationend', () => {
+
+        progressBar.classList.add('fill');
+    }, { once: true });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function loadusers() {
     socket.emit("loadusers1");
 }
+
+
+
+
+
+
+
+
+
 socket.on("loadusers2", json => {
     json = JSON.parse(json);
     console.log(json)
@@ -233,7 +277,22 @@ socket.on("getPolicy2", json => {
     document.getElementById("lockout").value = json.lockout;
     window.alert("Prefilled current policy values.");
 });
+function snowrun(file){
+    socket.emit("snowrun1", file)
+        startLoading()
+        document.getElementById('snowrunning').innerText=file
+}
+socket.on('snowrun2', (json) => {
+    json = JSON.parse(json)
 
+    finishLoading()
+    if(json.success){
+        window.alert("SnowLDC: Success")
+        
+    } else {
+        window.alert("Error: ", json.err)
+    }
+})
 
 
 

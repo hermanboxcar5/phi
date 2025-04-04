@@ -146,3 +146,60 @@ input {
 .btnnormal {
     background-color:#95f702;
 }
+
+.snowtile {
+    min-width:300px;
+    width:fit-content;
+    overflow-x:auto;
+    height:70px;
+    background-color:#555657;
+    border: 3px solid #3A3B3C;
+    border-radius:20px;
+    overflow-y:hidden;
+    display:inline-block;
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+    cursor: pointer
+}
+
+.snowtile::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+}
+
+.snowimg {
+    height:100%;
+    justify-content:center;
+
+}
+
+
+.snowcontent {
+    position:relative;
+    left:30px;
+    top:0px;
+    height:70px;
+    line-height:50px;
+    vertical-align: middle;
+    display:inline-block;
+}
+.snowimginner {
+    width:50px;height:50px; top:10px; left:10px; position:relative;
+    
+    transition: all 0.3s ease-in-out;
+    background-size: contain; /* Adjust the size of the background image */
+    background-repeat: no-repeat; /* Prevent the background image from repeating */
+    display:inline-block;
+    
+}
+.snowimgnormal{
+    background-image: url('/assets/snowLDC.png');
+}
+.snowimgnormal:hover {
+    background-image: url('/assets/snowLDC_play.png');
+}
+.snowimgcore{
+    background-image: url('/assets/snowLDC_core.png');
+}
+.snowimgcore:hover {
+    background-image: url('/assets/snowLDC_core_play.png');
+}

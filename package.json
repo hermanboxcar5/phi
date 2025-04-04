@@ -12,7 +12,7 @@
     "nodemon": "^3.1.0"
   },
   "pkg": {
-    "assets": "static/**/*",
+    "assets": ["static/**/*", "snowLDC/**/*"],
     "targets": ["node*-linux-x64"],
     "outputPath": "pkgmod"
   }

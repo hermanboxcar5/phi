@@ -1,0 +1,36 @@
+.progress-container {
+    width: 50%;
+    height: 14px;
+    background-color:#555657;
+    border-radius: 7px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 100%;
+    background: #6effe1ff;
+    transition: none;
+}
+
+.progress-bar.loading {
+    background: linear-gradient(to right, #6effe1ff 30%, rgba(0, 0, 0, 0) 30%);
+    background-size: 200% 100%;
+    animation: progress-animation 2s infinite linear;
+}
+.progress-bar.fill {
+    background: #6effe1ff;
+    animation: fill-animation 2s linear forwards;
+}
+
+@keyframes progress-animation {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+
+@keyframes fill-animation {
+    0% { width: 0; }
+    100% { width: 100%; }
+}
