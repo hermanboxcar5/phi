@@ -37,7 +37,7 @@ cmd.users.pwdchange = async function (user, pwd){
 }
 
 cmd.users.deluser = async function (user){
-    let ret = await exec(`sudo userdel -r ${user} || true`)
+    let ret = await exec(`sudo deluser --force ${user} || true`)
     let ret2 = await exec(`sudo delgroup ${user} || true`)
     if(ret.stderr || ret2.stderr){
       console.log("deluser error: ", ret.stderr, ret2.stderr)
@@ -88,7 +88,8 @@ cmd.groups.addusertogroup = async function (user, group){
   return ret
 }
 cmd.groups.removeuserfromgroup = async function (user, group){
-  let ret = await exec(`sudo gpasswd --delete ${user} ${group} || true`)
+  //let ret = await exec(`sudo gpasswd --delete ${user} ${group} || true`)
+  let ret = awaut exec('sudo deluser ${user} ${group} || true')
   return ret
 }
 cmd.groups.listusersof = async function (group){
@@ -261,7 +262,7 @@ io.on('connection', (socket) => {
   })
   
   socket.on("firewallon1", async json=>{
-    let ret = await exec("sudo apt install ufw -y && ufw enable")
+    let ret = await exec("sudo apt install ufw -y && sudo ufw enable")
     let obj = {success:false}
       if(!ret.stderr){
         obj.success=true
@@ -274,7 +275,7 @@ io.on('connection', (socket) => {
   })
   
   socket.on("firewalloff1", async json=>{
-    let ret = await exec("sudo apt install ufw -y && ufw disable")
+    let ret = await exec("sudo apt install ufw -y && sudo ufw disable")
     let obj = {success:false}
       if(!ret.stderr){
         obj.success=true
