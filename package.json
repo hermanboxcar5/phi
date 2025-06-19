@@ -1,19 +1,16 @@
 {
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "build": "pkg -c package.json index.js"
   },
   "dependencies": {
     "express": "^4.21.2",
+    "nexe": "^5.0.0-beta.4",
     "os": "^0.1.2",
     "pkg": "^5.8.1",
     "socketio": "^1.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"
-  },
-  "pkg": {
-    "assets": ["static/**/*", "snowLDC/**/*"],
-    "targets": ["node*-linux-x64"],
-    "outputPath": "pkgmod"
   }
 }

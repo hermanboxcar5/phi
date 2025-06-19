@@ -126,3 +126,24 @@ async function main() {
     console.log(await listpackages())
 }
 main();
+
+
+//test2
+
+(async () => {
+    const fs = require('fs').promises;
+    const path = require('path');
+    const util = require('util');
+    const exec = util.promisify(require('child_process').exec);
+  
+    try {
+      console.log("RUNNING: 1");
+      let content = await fs.readFile(path.join(__dirname, "/snow/testfile.sh"), 'utf8');
+      console.log("RUNNING: 1.5", content);
+      let ret = await exec(`sudo bash`, { input: content });
+      console.log("RUNNING: 2");
+      console.log("JSON RETURNED:", JSON.stringify(ret));
+    } catch (e) {
+      console.error("ERROR", e.message, e.stack);
+    }
+  })();

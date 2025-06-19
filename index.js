@@ -2,6 +2,7 @@ const express = require('express');
 const { createServer } = require('node:http');
 const  Server  = require('socket.io');
 let path = require('path');
+const fs = require('node:fs/promises');
 
 const app = express();
 const server = createServer(app);
@@ -134,6 +135,7 @@ cmd.users.usercomplete = async function (){
 
 
 app.use("/", express.static(path.join(__dirname, "/static")));
+console.log(path.join(__dirname, "/static"))
 
 io.on('connection', (socket) => {
   console.log("IO CONNECTION")
@@ -346,19 +348,24 @@ io.on('connection', (socket) => {
     let obj = {success:false}
     let ret = {};
     try {
-
-      ret = await exec(`sudo bash ${path.join(__dirname, "snowLDC/"+file)}`)
-
+      console.log("RUNNING: 1")
+      let content = await fs.readFile(path.join(__dirname, "/snow/"+file), 'utf8');
+      console.log("RUNNING: 1.5", content)
+      ret = await exec(`sudo bash`, {input:content})
+      console.log("RUNNING: 2")
+      console.log("JSON RETURNED:", JSON.stringify(ret))
     } catch(e){
+      console.log("ERROR", e)
       obj.err=e
     }
+    console.log("RUNNING: 3")
     if(!ret.stderr && !obj.err){
       obj.success=true
     } else {
       obj.err = ret.stderr + obj.err
     }
     obj.msg=ret.stdout
-
+    console.log("REACHED")
     socket.emit("snowrun2", JSON.stringify(obj))
   })
 });
